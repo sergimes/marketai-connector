@@ -24,15 +24,15 @@ own API keys, on your own computer. Your keys and your money never pass through 
 ```bash
 git clone https://github.com/sergimes/marketai-connector.git
 cd marketai-connector
-cp bot.example.env bot.env        # on Windows: copy bot.example.env bot.env
+cp bot.example.env bot1.env       # on Windows: copy bot.example.env bot1.env
 ```
 
-Open `bot.env` in a text editor. Paste your two lines from My bots, and fill in your
+Open `bot1.env` in a text editor. Paste your two lines from My bots, and fill in your
 exchange keys. Then:
 
 ```bash
 docker compose up -d
-docker compose logs -f connector
+docker compose logs -f bot1
 ```
 
 Within a minute the log says `Trading signal feed ...`, and My bots shows your bot as
@@ -51,7 +51,7 @@ The connector follows your bot on MarketAI by itself. You never need to restart 
 | **Another signal feed** | closes every open position of the old feed, then trades the new one |
 | **Another leverage** | uses it for new entries; open positions keep their size |
 
-`OPEN_LEVERAGE` in `bot.env` overrides the leverage on My bots. Leave it out unless you
+`OPEN_LEVERAGE` in a bot's settings file overrides the leverage on My bots. Leave it out unless you
 mean that.
 
 ## Updates
@@ -82,14 +82,31 @@ The log's first line says which version is running.
 - **Run one copy per bot.** If you start the same bot twice, MarketAI keeps the newer copy
   and stops the older one (see below).
 - **Try it on a demo account first:** use Bitget demo API keys and set `BITGET_DEMO=true`
-  in `bot.env`.
+  in the bot's settings file.
 
 ## More than one bot
 
-Each bot needs its own exchange account (or sub-account), its own settings file and its
-own name. Copy the `connector` service in `compose.yml`, give the copy another service
-name, `container_name` and `env_file` (for example `bot2.env`), and set a different
-`NAME=` in that file. The one `updater` service keeps both up to date.
+One bot = one settings file = one block in `compose.yml`. Every bot needs:
+
+- **its own bot on MarketAI**, so its own token (a token runs one bot at a time);
+- **its own exchange account or sub-account**, with its own API keys. Each entry is sized
+  from the whole account, so two bots sharing an account would each trade as if they
+  had all of it.
+
+To add a second bot:
+
+1. `cp bot.example.env bot2.env`, and fill it in with the second bot's two lines from My
+   bots and the second account's keys. Set `NAME=Bot2`.
+2. In `compose.yml`, delete the `#` at the very start of the six `bot2` lines, and of the
+   `bot2-data:` and `bot2-logs:` lines at the bottom. Delete only the `#`: the spaces after
+   it are the indentation Docker needs.
+3. `docker compose up -d`. Watch it with `docker compose logs -f bot2`.
+
+A third bot is the same again: `bot3.env`, and a copy of the `bot2` block renamed `bot3`
+(with `bot3-data` and `bot3-logs`). Each bot keeps its saved state in its own storage,
+so bots can never touch each other's files. The one `updater` keeps them all up to date.
+
+`docker compose logs -f` shows every bot at once; each line starts with the bot's name.
 
 ## When something is wrong
 
@@ -97,15 +114,15 @@ The connector says what is wrong in plain words. The messages you are most likel
 
 | the log says | what to do |
 |---|---|
-| `Not starting: ...` | the rest of the line says what to fix in `bot.env` |
-| `MarketAI refused this bot's token (401)` | copy the token again from My bots, or create a new one, put it in `bot.env`, then `docker compose up -d` |
-| `STOPPED: another instance of this bot connected` | the same bot runs somewhere else too; stop one of them, then `docker compose restart connector` on the one you keep |
-| `STOPPED: MarketAI revoked this bot's token` | the token was replaced or the bot deleted; put the new token in `bot.env`, then `docker compose up -d` |
+| `Not starting: ...` | the rest of the line says what to fix in that bot's settings file |
+| `MarketAI refused this bot's token (401)` | copy the token again from My bots, or create a new one, put it in the bot's settings file, then `docker compose up -d` |
+| `STOPPED: another instance of this bot connected` | the same bot runs somewhere else too, or two settings files hold the same token; stop one, then `docker compose restart bot1` (its name) on the one you keep |
+| `STOPPED: MarketAI revoked this bot's token` | the token was replaced or the bot deleted; put the new token in the bot's settings file, then `docker compose up -d` |
 | `open skipped: ... below the venue minimum` | the account is too small for the exchange's smallest order at this leverage; that leg is skipped, never rounded up |
 | `open skipped: unusable equity` | the connector sees no money to trade with: fund the futures account (on Bitget, not the spot wallet) |
 
-The full log is kept inside Docker. To copy it out:
-`docker compose cp connector:/app/logs ./logs`.
+The full log is kept inside Docker. To copy a bot's log out:
+`docker compose cp bot1:/app/logs ./logs`.
 
 ## Licence and risk
 
