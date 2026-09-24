@@ -88,7 +88,7 @@ bots. Those minutes are the middle of each 15-minute bar, so an update never cut
 order short. Each bot's log starts with the version it runs.
 
 **To stay on one version**, create a file named `.env` in this folder with one line, for
-example `CONNECTOR_VERSION=1.0.1`, then `docker compose up -d`. Delete the file to follow
+example `CONNECTOR_VERSION=0.3.0`, then `docker compose up -d`. Delete the file to follow
 the latest release again. To update by hand only, turn automatic updates off in the setup
 and run `docker compose pull && docker compose up -d` when you want to.
 
