@@ -1,0 +1,4 @@
+# Your settings hold your bot token and exchange keys. Never commit them.
+*.env
+!bot.example.env
+logs/

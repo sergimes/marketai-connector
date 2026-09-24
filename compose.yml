@@ -1,0 +1,54 @@
+# MarketAI Connector: runs your MarketAI bot on your own exchange account.
+#
+#   cp bot.example.env bot.env      # then fill in bot.env
+#   docker compose up -d            # start
+#   docker compose logs -f          # watch it
+#   docker compose down             # stop
+#
+# See README.md.
+name: marketai-connector
+
+services:
+  connector:
+    image: ghcr.io/sergimes/marketai-connector:latest
+    # To stay on one version instead of updating, name it here, e.g.
+    # image: ghcr.io/sergimes/marketai-connector:1.0.0
+    container_name: marketai-connector
+    env_file: bot.env
+    # Keeps it running after a crash or a reboot. It never exits on purpose: a paused
+    # bot, a refused token or a lost connection all leave it running and waiting.
+    restart: unless-stopped
+    labels:
+      # Lets the updater below refresh this container, and only this one.
+      - com.centurylinklabs.watchtower.enable=true
+    volumes:
+      # Its saved state (the stop-loss and take-profit of each open position) and its
+      # log files. Kept when the container is updated or recreated.
+      - connector-data:/app/orders
+      - connector-logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+  # Checks for a new release at minute 7, 22, 37 and 52 of every hour, and if there is
+  # one, pulls it and restarts the connector. Those minutes are the middle of each
+  # 15-minute bar, so an update never cuts an order short. Remove this service to update
+  # by hand instead: `docker compose pull && docker compose up -d`.
+  updater:
+    image: nickfedor/watchtower:1.22.3
+    container_name: marketai-connector-updater
+    restart: unless-stopped
+    volumes:
+      # How it restarts the connector. It is told to touch only the labelled container.
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_SCHEDULE: "0 7,22,37,52 * * * *"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_CLEANUP: "true"
+      TZ: UTC
+
+volumes:
+  connector-data:
+  connector-logs:

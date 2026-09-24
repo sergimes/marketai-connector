@@ -1,0 +1,19 @@
+MarketAI Connector licence
+
+Copyright (c) 2026 MarketAI (https://app.marketai.trade)
+
+1. The files in this repository (the README, the compose file, the settings template and
+   the disclaimer) may be copied, changed and shared by anyone.
+
+2. The MarketAI Connector software, published as the container image
+   ghcr.io/sergimes/marketai-connector, may be run by anyone, free of charge, to trade
+   their own exchange account with their own MarketAI bot. It may not be sold, offered as
+   a service to others, or changed and redistributed, without written permission from
+   MarketAI.
+
+3. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+   PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES (INCLUDING TRADING LOSSES) OR OTHER LIABILITY,
+   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OF IT.
