@@ -37,33 +37,37 @@ Run the setup and choose **Add a bot**:
 setup.cmd           # Windows (in PowerShell: .\setup.cmd)
 ```
 
-It asks for the bot's token and the exchange keys, and checks both before saving:
+Paste the lines My bots shows for the bot (or just its token), then the exchange keys.
+Each hidden answer shows a `*` per character. The setup checks both before saving:
 MarketAI says which bot the token belongs to, and the exchange shows the account's
-balance (it only reads, it never trades). Then start it:
+balance (it only reads, it never trades). Then it offers to start the bot.
 
-```bash
-docker compose up -d --remove-orphans
-docker compose logs -f
-```
-
-Within a minute the log says `Trading signal feed ...`, and My bots shows the bot as
-**Connected**. Press Ctrl+C to stop watching the log; the bots keep running.
-
-To stop them: `docker compose down`. To start them again: `docker compose up -d`.
+Within a minute the bot's log says `Trading signal feed ...`, and My bots shows it as
+**Connected**. The setup's **Show a bot's recent log** shows that line.
 
 ## The setup
 
-Run `./setup.sh` (or `setup.cmd`) any time. It shows what it can do:
+Run `./setup.sh` (or `setup.cmd`) any time. It opens with each bot's state (running,
+stopped, not started), then shows what it can do:
 
 | choice | what it does |
 |---|---|
 | **Add a bot** | asks for the token and keys, checks them, and saves the bot |
 | **Change a bot** | a new token (after making one on My bots), other exchange keys or account, the name, a leverage that overrides My bots, new entries on or off |
 | **Remove a bot** | stops running it here (read the warning below first) |
-| **Show my bots** | lists them, with tokens and keys hidden |
+| **Show my bots** | each bot's settings (tokens and keys hidden), whether it runs, and, for a running bot, what My bots says about it |
+| **Start the bots** | starts every bot, and applies your changes |
+| **Stop the bots** | stops every bot; open positions stay on the exchange, with their stop-loss and take-profit |
+| **Show a bot's recent log** | its last 40 lines |
 | **Automatic updates** | on or off |
 
-After a change, apply it with `docker compose up -d --remove-orphans`.
+The same, without the setup:
+
+```bash
+docker compose up -d --remove-orphans     # start, or apply the setup's changes
+docker compose logs -f                    # watch every bot (Ctrl+C stops watching)
+docker compose stop                       # stop every bot
+```
 
 It refuses what would go wrong later: the same bot twice, a token that belongs to a
 different bot, and two bots on one exchange account (each would trade the whole balance
@@ -93,8 +97,9 @@ the latest release again. To update by hand only, turn automatic updates off in 
 and run `docker compose pull && docker compose up -d` when you want to.
 
 **This folder's own files update with `git pull`** (or a fresh ZIP). Your files never
-do: everything the setup writes (`bot-*.env`, `compose.override.yml`) and your `.env` are
-ignored by git, so a pull can never overwrite or clash with them. Do not edit
+do: everything the setup writes (`bot-*.env`, `compose.override.yml`, and the short-lived
+`.setup-*` files) and your `.env` are ignored by git, so a pull can never overwrite or
+clash with them. Do not edit
 `compose.yml` or `bot-template.yml`; the setup covers everything they would need.
 
 ## Good to know

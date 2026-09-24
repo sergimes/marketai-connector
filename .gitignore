@@ -3,4 +3,6 @@
 *.env
 !bot.example.env
 compose.override.yml
+# Passed between setup.sh / setup.cmd and the setup while it runs.
+.setup-*
 logs/
