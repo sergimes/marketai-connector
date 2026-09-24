@@ -16,9 +16,9 @@ through MarketAI.
   `k7m3q9x2`) and a token.
 - **An exchange account on Bitget or Hyperliquid for each bot**, with an API key that can
   **trade but not withdraw**.
-- **A computer that stays on, with Docker.** Docker Desktop on Windows or Mac, or Docker
-  Engine on Linux. Both x86 and ARM work (for example a Raspberry Pi 4 or 5 with a 64-bit
-  system, or an Apple silicon Mac).
+- **A computer that stays on and awake, with Docker.** Docker Desktop on Windows or Mac,
+  or Docker Engine on Linux. Both x86 and ARM work (for example a Raspberry Pi 4 or 5
+  with a 64-bit system, or an Apple silicon Mac).
 
 ## Start
 
@@ -92,7 +92,7 @@ bots. Those minutes are the middle of each 15-minute bar, so an update never cut
 order short. Each bot's log starts with the version it runs.
 
 **To stay on one version**, create a file named `.env` in this folder with one line, for
-example `CONNECTOR_VERSION=0.3.0`, then `docker compose up -d`. Delete the file to follow
+example `CONNECTOR_VERSION=1.0.0`, then `docker compose up -d`. Delete the file to follow
 the latest release again. To update by hand only, turn automatic updates off in the setup
 and run `docker compose pull && docker compose up -d` when you want to.
 
@@ -108,6 +108,10 @@ clash with them. Do not edit
   so two bots on one account would each trade as if they had all of it.
 - **Every position has its stop-loss at the exchange.** If the connector, your computer or
   your internet stops, the stop-loss still works.
+- **Keep the computer awake.** When it sleeps, the bots sleep with it: they miss every
+  signal, closes included, until it wakes. Open positions keep their stop-loss and
+  take-profit at the exchange. Turn sleep off in the power settings, or run the connector
+  on a machine that is always on, like a small server or a Raspberry Pi.
 - **Your keys stay on your computer.** The connector sends the bot token to MarketAI, and
   your exchange keys only to your exchange. Logs show only the first five characters of
   the token.
