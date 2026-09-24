@@ -1,4 +1,6 @@
-# Your settings hold your bot token and exchange keys. Never commit them.
+# Everything that is yours. git never tracks it, so `git pull` never touches it.
+# Your bots' settings hold tokens and exchange keys: never commit them.
 *.env
 !bot.example.env
+compose.override.yml
 logs/

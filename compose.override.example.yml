@@ -1,0 +1,18 @@
+# Your bots, one block each. The setup writes compose.override.yml for you
+# (./setup.sh, or setup.cmd on Windows) and checks what you give it.
+#
+# To write it by hand instead: copy this file to compose.override.yml, replace k7m3q9x2
+# with your bot's id from My bots (it appears eight times below), and put the bot's
+# settings in bot-k7m3q9x2.env (start from bot.example.env). A second bot is a second
+# block and two more volumes, with its own id.
+services:
+  bot-k7m3q9x2:
+    extends: {file: bot-template.yml, service: bot}
+    container_name: marketai-bot-k7m3q9x2
+    env_file: bot-k7m3q9x2.env
+    volumes:
+      - bot-k7m3q9x2-data:/app/orders
+      - bot-k7m3q9x2-logs:/app/logs
+volumes:
+  bot-k7m3q9x2-data:
+  bot-k7m3q9x2-logs:
