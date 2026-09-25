@@ -70,7 +70,7 @@ exit /b 0
 rem .setup-pending (changes saved, not applied yet) goes only once Docker applied them.
 :start
 docker compose up -d --remove-orphans
-if errorlevel 1 (echo Docker could not start them: see above.) else (if exist .setup-pending del .setup-pending)
+if errorlevel 1 (echo Docker could not start the bots. See the messages above.) else (if exist .setup-pending del .setup-pending)
 if "%GO%"=="start-exit" exit /b 0
 goto back
 
@@ -78,9 +78,9 @@ goto back
 rem Apply the changes first: a bot removed here is no longer in the files, and
 rem "docker compose stop" alone would leave it running.
 docker compose up --no-start --remove-orphans
-if errorlevel 1 (echo Docker could not stop them: see above. & goto back)
+if errorlevel 1 (echo Docker could not stop the bots. See the messages above. & goto back)
 docker compose stop
-if errorlevel 1 (echo Docker could not stop them: see above.) else (if exist .setup-pending del .setup-pending)
+if errorlevel 1 (echo Docker could not stop the bots. See the messages above.) else (if exist .setup-pending del .setup-pending)
 goto back
 
 :logs

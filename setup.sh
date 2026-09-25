@@ -50,7 +50,7 @@ while :; do
             if docker compose up -d --remove-orphans; then
                 rm -f .setup-pending
             else
-                echo "Docker could not start them: see above."
+                echo "Docker could not start the bots. See the messages above."
             fi
             [ "$action" = start ] || exit 0 ;;
         stop)
@@ -59,7 +59,7 @@ while :; do
             if docker compose up --no-start --remove-orphans && docker compose stop; then
                 rm -f .setup-pending
             else
-                echo "Docker could not stop them: see above."
+                echo "Docker could not stop the bots. See the messages above."
             fi ;;
         "logs bot-"*)
             service=${action#logs }
