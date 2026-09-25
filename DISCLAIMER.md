@@ -11,6 +11,15 @@ They are not investment advice, and nothing here is a recommendation to buy or s
 anything. Backtests and past live results do not predict future results. A feed can lose
 money for long periods.
 
+**Every order is yours.** The signals come from MarketAI; the choice to follow them
+automatically is yours. Once you start the connector, it places, changes and cancels
+orders on your account by itself, without asking you first. By running it, you authorise
+those orders, and they and their results are yours. An order caused by a fault in the
+connector is different: see LICENSE section 8. Check your exchange account regularly, and
+stop the connector if you see an order you did not expect. To stop it trading, pause your
+bots on My bots, which closes their positions, or stop the connector, which leaves them
+open with their stop-loss and take-profit.
+
 **Orders do not always fill as planned.** A stop-loss fires as a market order and can fill
 worse than its level in a fast market. A take-profit rests as a limit order and can be
 missed when the price only touches it. Exchanges, networks, MarketAI and your own computer
@@ -31,6 +40,6 @@ the connector behaves.
 and then with an amount you can afford to lose, and check your exchange account yourself.
 
 **You are responsible for your account.** You run the connector on your computer, with your
-exchange account and your API keys. You are responsible for keeping those keys safe, for
-the orders placed on your account, and for following the laws where you live; some
-countries restrict leveraged derivatives trading for retail customers.
+exchange account and your API keys. You are responsible for keeping those keys safe, and for
+following the laws where you live; some countries restrict leveraged derivatives trading
+for retail customers.

@@ -1,4 +1,4 @@
-MarketAI Connector licence, version 1.1 (25 September 2026)
+MarketAI Connector licence, version 1.2 (25 September 2026)
 
 Copyright (c) 2026 MarketAI (https://app.marketai.trade).
 "We" means MarketAI. "You" means the person or company that uses the connector.
@@ -10,7 +10,7 @@ free to reuse (section 2). The connector itself is not (sections 3 to 6).
 2. This repository's files
 Anyone may use, copy, change and share every file in this repository except this
 LICENSE, for any purpose, without asking us. They come without warranty, as in
-section 8. If you share a changed version, do not present it as ours.
+section 9. If you share a changed version, do not present it as ours.
 
 3. What "the connector" means
 The connector is the MarketAI Connector software in every form: the container image
@@ -52,15 +52,36 @@ studying how the software works.
 - When it ends, stop running the connector and delete your copies. Stopping the
   connector does not close your positions: see DISCLAIMER.md.
 
-8. No promise that it works as intended
+8. The orders are yours
+The signals come from MarketAI. The choice to follow them automatically is yours.
+Once you start the connector, it places, changes and cancels orders on your exchange
+account by itself, without asking you each time. It does this to follow your bots'
+signals and their state on My bots, and to protect your positions, as README.md and
+DISCLAIMER.md describe. By starting it, you authorise it to do this. You choose whether
+it runs, with which bots, on which account and at what leverage, and you can pause or
+stop it at any time.
+So the orders it places this way are your orders, and their results are yours, towards
+your exchange and anyone else. That includes what DISCLAIMER.md warns about: a
+stop-loss that fills worse than its level, a take-profit that is missed, a signal
+missed while your computer was off or asleep, and positions closed when a bot is paused
+or not paid.
+An order caused by a fault in the connector itself, such as an order your bots' signals
+did not call for, or a wrong size, is not covered by this section. Section 10 applies
+to it.
+Check your exchange account regularly. If you see an order you did not expect, stop the
+connector and tell us through app.marketai.trade. If you do not, and the loss grows
+because of that, the extra loss is yours.
+
+9. No promise that it works as intended
 We provide the connector free of charge and as it is. We do not promise that it has
 no errors, that it runs without interruption, or that any order is placed, filled or
 closed as intended. This does not limit any rights you have as a consumer.
 
-9. Liability
+10. Liability
 Trading leveraged futures is risky, and you choose to do it. We are not liable for
 losses that come from:
 - how market prices move;
+- orders the connector places as section 8 describes, and their results;
 - the results of any signal feed you chose to follow;
 - your exchange, your computer, your internet connection, or anything else we do not
   control;
@@ -72,26 +93,26 @@ Nothing in this licence limits our liability:
 - where the law does not allow it to be limited, including product liability law and
   consumer law.
 
-10. Other people's software
+11. Other people's software
 The image contains open-source software by other authors: Python, Debian packages and
 Python libraries. Each comes under its own licence, not this one, and its licence text
 is in the image beside it. The updater in compose.yml (watchtower) is a separate
 program under its own licence.
 
-11. The MarketAI name
+12. The MarketAI name
 "MarketAI" is our name. This licence does not let you use it, except to say truthfully
 that you use the connector.
 
-12. Changes to this licence
+13. Changes to this licence
 We may publish a new version of this licence. It applies to connector versions released
 after that. If you are a consumer, we tell you in advance, and you may stop using the
 connector.
 
-13. Law and courts
+14. Law and courts
 Spanish law applies. If you are a consumer, you also keep the protection of the
 mandatory laws of the country where you live, and you may go to the courts there. For
 everyone else, the courts of Barcelona, Spain, decide any dispute.
 
-14. The rest
+15. The rest
 If MarketAI's terms of service say something different about the connector, those
 terms apply. If a court finds one part of this licence invalid, the rest still applies.
