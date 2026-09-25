@@ -3,6 +3,8 @@
 *.env
 !bot.example.env
 compose.override.yml
+# Your copy of the licence and disclaimer you accepted, written by the setup.
+accepted-terms-*.txt
 # Passed between setup.sh / setup.cmd and the setup while it runs.
 .setup-*
 logs/
