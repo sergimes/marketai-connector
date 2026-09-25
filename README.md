@@ -37,7 +37,10 @@ Run the setup and choose **Add a bot**:
 setup.cmd           # Windows (in PowerShell: .\setup.cmd)
 ```
 
-Paste the lines My bots shows for the bot (or just its token), then the exchange keys.
+First it asks you to accept the connector's [licence](LICENSE) and
+[risk disclaimer](DISCLAIMER.md); you can read both in full right there. A bot does not
+trade until they are accepted. Then paste the lines My bots shows for the bot (or just
+its token), then the exchange keys.
 Each hidden answer shows a `*` per character. The setup checks both before saving:
 MarketAI says which bot the token belongs to, and the exchange shows the account's
 balance (it only reads, it never trades). Then it offers to start the bot.
@@ -137,6 +140,7 @@ id starts every line. The messages you are most likely to see:
 | the log says | what to do |
 |---|---|
 | `Not starting: ...` | the rest of the line says what is missing; run the setup and **Change a bot** |
+| `Opening nothing new: the connector's licence and risk disclaimer are not accepted yet` | run the setup and accept them, then **Start the bots**. Until then the bot only looks after what is already open |
 | `MarketAI refused this bot's token (401)` | make a new token on My bots, then the setup: **Change a bot**, **Its token** |
 | `STOPPED: another instance of this bot connected` | the same bot runs somewhere else too; stop one, then `docker compose restart` here if this is the one you keep |
 | `STOPPED: MarketAI revoked this bot's token` | the token was replaced or the bot deleted; give it the new token in the setup, then `docker compose up -d` |
@@ -150,7 +154,8 @@ The full log of a bot is kept inside Docker. To copy it out:
 
 The setup is the easy way, but it only writes two kinds of plain files. To write them
 yourself, copy `bot.example.env` to `bot-<id>.env` and `compose.override.example.yml` to
-`compose.override.yml`, and follow the notes inside each.
+`compose.override.yml`, and follow the notes inside each. Accepting the licence and
+disclaimer is one of them: without `TERMS_VERSION_ACCEPTED` in its file, a bot does not trade.
 
 ## Licence and risk
 
