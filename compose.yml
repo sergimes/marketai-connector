@@ -16,8 +16,8 @@ name: marketai-connector
 services:
   # Checks for a new release at minute 7, 22, 37 and 52 of every hour, and if there is
   # one, pulls it and restarts the bots. Those minutes are the middle of each 15-minute
-  # bar, so an update never cuts an order short. It touches only the bots, nothing else
-  # on your computer. The setup can turn it off.
+  # bar, when no order is normally being placed. It is set to update only the containers
+  # labelled for it: the bots. The setup can turn it off.
   updater:
     image: nickfedor/watchtower:1.22.3
     restart: unless-stopped

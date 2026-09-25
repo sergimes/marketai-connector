@@ -1,19 +1,97 @@
-MarketAI Connector licence
+MarketAI Connector licence, version 1.1 (25 September 2026)
 
-Copyright (c) 2026 MarketAI (https://app.marketai.trade)
+Copyright (c) 2026 MarketAI (https://app.marketai.trade).
+"We" means MarketAI. "You" means the person or company that uses the connector.
 
-1. The files in this repository (the README, the compose file, the settings template and
-   the disclaimer) may be copied, changed and shared by anyone.
+1. Two kinds of files
+The files in this repository, sergimes/marketai-connector, except this LICENSE, are
+free to reuse (section 2). The connector itself is not (sections 3 to 6).
 
-2. The MarketAI Connector software, published as the container image
-   ghcr.io/sergimes/marketai-connector, may be run by anyone, free of charge, to trade
-   their own exchange account with their own MarketAI bot. It may not be sold, offered as
-   a service to others, or changed and redistributed, without written permission from
-   MarketAI.
+2. This repository's files
+Anyone may use, copy, change and share every file in this repository except this
+LICENSE, for any purpose, without asking us. They come without warranty, as in
+section 8. If you share a changed version, do not present it as ours.
 
-3. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-   INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-   PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES (INCLUDING TRADING LOSSES) OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-   CONNECTION WITH THE SOFTWARE OR THE USE OF IT.
+3. What "the connector" means
+The connector is the MarketAI Connector software in every form: the container image
+ghcr.io/sergimes/marketai-connector, any copy of it, every version and update, and
+the source code inside it.
+
+4. What you may do, free of charge
+While you have a MarketAI account with at least one bot, you may:
+- download the connector and keep copies of it for your own use;
+- run it on your own computer, or on a server you rent;
+- use it to follow the bots of your own MarketAI account, through MarketAI's service
+  at app.marketai.trade;
+- use it to trade exchange accounts that you own, or that your company owns and you
+  are allowed to trade.
+Someone else may set it up for you, as long as it trades only your accounts, for you.
+
+5. What you may not do without our written permission
+- Sell or rent the connector, or charge anyone for running it.
+- Run it for someone else, or to trade money that belongs to other people (for
+  example clients' accounts, or a vault that other people have deposited in).
+- Share or publish copies of the connector, changed or not. Point people to our
+  registry instead.
+- Use it with any signal source other than MarketAI's service.
+- Change it, or copy its source code, or any part of it, into other software.
+You can read the source code inside the image. That does not make it open source, and
+it gives you no right to reuse it.
+
+6. Rights the law gives you anyway
+This licence does not take away rights that the law gives every lawful user and that
+no contract can remove. In the European Union these include making a backup copy and
+studying how the software works.
+
+7. Updates, and when this licence ends
+- The connector updates itself unless you turn that off. Every update is covered by
+  this licence.
+- This licence ends by itself when you no longer have a MarketAI account with a bot,
+  or if you break it and do not put that right within 14 days of our notice.
+- We may end it for everyone, or stop offering the connector, with 30 days' notice.
+- When it ends, stop running the connector and delete your copies. Stopping the
+  connector does not close your positions: see DISCLAIMER.md.
+
+8. No promise that it works as intended
+We provide the connector free of charge and as it is. We do not promise that it has
+no errors, that it runs without interruption, or that any order is placed, filled or
+closed as intended. This does not limit any rights you have as a consumer.
+
+9. Liability
+Trading leveraged futures is risky, and you choose to do it. We are not liable for
+losses that come from:
+- how market prices move;
+- the results of any signal feed you chose to follow;
+- your exchange, your computer, your internet connection, or anything else we do not
+  control;
+- your settings, or how you look after your API keys.
+For any other loss, our liability is limited as far as the law allows.
+Nothing in this licence limits our liability:
+- for harm we cause on purpose or through gross negligence;
+- for death or personal injury;
+- where the law does not allow it to be limited, including product liability law and
+  consumer law.
+
+10. Other people's software
+The image contains open-source software by other authors: Python, Debian packages and
+Python libraries. Each comes under its own licence, not this one, and its licence text
+is in the image beside it. The updater in compose.yml (watchtower) is a separate
+program under its own licence.
+
+11. The MarketAI name
+"MarketAI" is our name. This licence does not let you use it, except to say truthfully
+that you use the connector.
+
+12. Changes to this licence
+We may publish a new version of this licence. It applies to connector versions released
+after that. If you are a consumer, we tell you in advance, and you may stop using the
+connector.
+
+13. Law and courts
+Spanish law applies. If you are a consumer, you also keep the protection of the
+mandatory laws of the country where you live, and you may go to the courts there. For
+everyone else, the courts of Barcelona, Spain, decide any dispute.
+
+14. The rest
+If MarketAI's terms of service say something different about the connector, those
+terms apply. If a court finds one part of this licence invalid, the rest still applies.

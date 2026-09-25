@@ -83,7 +83,8 @@ The connector follows each bot on MarketAI by itself. You never need to restart 
 | on My bots | what the connector does |
 |---|---|
 | **Active** | trades the signal feed |
-| **Paused**, waiting for approval, or the feed is no longer offered | closes every open position, then waits |
+| **Paused**, waiting for approval, not paid, or the feed is no longer offered | closes every open position, then waits |
+| **Bot deleted**, or its token replaced | stops trading; open positions stay as they are, each with its stop-loss |
 | **Another signal feed** | closes every open position of the old feed, then trades the new one |
 | **Another leverage** | uses it for new entries; open positions keep their size |
 
@@ -91,8 +92,8 @@ The connector follows each bot on MarketAI by itself. You never need to restart 
 
 **The connector updates itself.** At minute 7, 22, 37 and 52 of every hour, the
 `updater` checks for a new release; if there is one, it downloads it and restarts the
-bots. Those minutes are the middle of each 15-minute bar, so an update never cuts an
-order short. Each bot's log starts with the version it runs.
+bots. Those minutes are the middle of each 15-minute bar, when no order is normally being
+placed. Each bot's log starts with the version it runs.
 
 **To stay on one version**, create a file named `.env` in this folder with one line, for
 example `CONNECTOR_VERSION=1.0.0`, then `docker compose up -d`. Delete the file to follow
@@ -109,8 +110,10 @@ clash with them. Do not edit
 
 - **One exchange account per bot.** Each entry is sized from the whole account's balance,
   so two bots on one account would each trade as if they had all of it.
-- **Every position has its stop-loss at the exchange.** If the connector, your computer or
-  your internet stops, the stop-loss still works.
+- **Every position gets its stop-loss at the exchange,** as an order of its own, so it does
+  not depend on the connector: it keeps working if the connector, your computer or your
+  internet stops. If placing it fails, the connector tries again every two minutes and
+  says so in its log.
 - **Keep the computer awake.** When it sleeps, the bots sleep with it: they miss every
   signal, closes included, until it wakes. Open positions keep their stop-loss and
   take-profit at the exchange. Turn sleep off in the power settings, or run the connector
