@@ -11,6 +11,7 @@ rem start or stop other containers unless it is given control of Docker, and the
 rem is not.
 setlocal
 cd /d "%~dp0"
+if "%~1"==":heartbeat" goto heartbeat
 
 set "IMAGE=ghcr.io/sergimes/marketai-connector:latest"
 for /f "tokens=2 delims==" %%v in ('findstr /b "CONNECTOR_VERSION=" .env 2^>nul') do set "IMAGE=ghcr.io/sergimes/marketai-connector:%%v"
@@ -22,8 +23,20 @@ set "AGAIN="
 rem What Docker says about the bots, for the setup to show. Nothing else is shared.
 docker compose ps -a --format json > .setup-status.json 2>nul || del .setup-status.json 2>nul
 if exist .setup-action del .setup-action
-docker run --rm -it -v "%cd%:/work" -e SETUP_ACTIONS=1 %IMAGE% setup %AGAIN% %*
+rem While the setup runs, keep a heartbeat file fresh from this window, one per run:
+rem this same script, started beside it (see :heartbeat). Closing the window ends that
+rem too, and the setup then ends itself within half a minute: Docker would otherwise keep
+rem it running, waiting for an answer that never comes. The heartbeat gets no hold on
+rem the window's keyboard or screen (<nul >nul): each program it ran used to put the
+rem window back in line mode (measured), undoing the raw mode docker run -it needs, so
+rem typed secrets showed and every Enter came twice.
+set "RUN=%RANDOM%%RANDOM%"
+copy /y nul ".setup-running-%RUN%" >nul
+>".setup-alive-%RUN%" echo %time%
+start "" /b cmd /d /c ".\%~nx0" :heartbeat %RUN% <nul >nul 2>&1
+docker run --rm -it -v "%cd%:/work" -e SETUP_ACTIONS=1 -e SETUP_HEARTBEAT=.setup-alive-%RUN% %IMAGE% setup %AGAIN% %*
 set "STATUS=%errorlevel%"
+if exist ".setup-running-%RUN%" del ".setup-running-%RUN%"
 set "ACTION="
 if exist .setup-action set /p ACTION=<.setup-action
 if exist .setup-status.json del .setup-status.json
@@ -80,3 +93,12 @@ echo Press any key to go back to the setup.
 pause >nul
 set "AGAIN=--again"
 goto ask
+
+:heartbeat
+rem Runs beside the setup, in the same window, for as long as its .setup-running-<run>
+rem is there; then removes its heartbeat file. Started with start /b, it ignores Ctrl+C,
+rem and closing the window ends it.
+if not exist ".setup-running-%~2" (del ".setup-alive-%~2" 2>nul & exit /b 0)
+>".setup-alive-%~2" echo %time%
+ping -n 6 127.0.0.1 >nul 2>&1
+goto heartbeat

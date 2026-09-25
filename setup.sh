@@ -26,11 +26,21 @@ while :; do
     docker compose ps -a --format json > .setup-status.json 2> /dev/null \
         || rm -f .setup-status.json
     rm -f .setup-action
+    # While the setup runs, keep a heartbeat file fresh from this window, one per run.
+    # Closing the window stops this too, and the setup then ends itself within half a
+    # minute: Docker would otherwise keep it running, waiting for an answer that never
+    # comes. (In a folder it cannot write, the setup says so itself.)
+    alive=".setup-alive-$$"
+    touch "$alive" 2> /dev/null || true
+    ( while touch "$alive" 2> /dev/null; do sleep 5; done ) &
+    beat=$!
     status=0
-    docker run --rm -it --user "$(id -u):$(id -g)" -v "$here:/work" -e SETUP_ACTIONS=1 \
-        "$image" setup $again "$@" || status=$?
+    docker run --rm -it --user "$(id -u):$(id -g)" -v "$here:/work" \
+        -e SETUP_ACTIONS=1 -e SETUP_HEARTBEAT="$alive" "$image" setup $again "$@" \
+        || status=$?
+    kill "$beat" 2> /dev/null || true
     action=$(cat .setup-action 2> /dev/null || true)
-    rm -f .setup-status.json .setup-action
+    rm -f .setup-status.json .setup-action "$alive"
     [ "$status" -eq 0 ] || exit "$status"
 
     # The setup asked for one of these, and nothing else is run. .setup-pending (changes

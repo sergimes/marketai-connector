@@ -61,6 +61,9 @@ stopped, not started), then shows what it can do:
 | **Show a bot's recent log** | its last 40 lines |
 | **Automatic updates** | on or off |
 
+Choose **0** to leave it, or just close its window: it then ends by itself within half a
+minute, and leaves nothing running. A change is saved whole or not at all.
+
 The same, without the setup:
 
 ```bash
