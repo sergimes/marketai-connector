@@ -127,25 +127,31 @@ value to hold in each stock of the feed. The connector brings the account to it:
 
 - **When the market is open.** A target that arrives after the close is applied at the
   next open. Orders fill only during regular US market hours.
-- **Sales first, then purchases.** What the feed buys at the open is bought at the open,
-  at any price. Anything else the account is short of (a bar the connector missed, an
+- **Sales first, then purchases.** Sales are at market. What the feed buys at the open is
+  bought with a market order in the first minutes after the open, at any price. Anything else the account is short of (a bar the connector missed, an
   order Alpaca refused, a deposit) is bought only at or below the price limit MarketAI
   sends, so the account can hold less than its target. The log names each purchase
   skipped and why.
-- **Leverage.** At 1x the bot buys only with the account's cash. Above 1x it borrows from
-  Alpaca up to the bot's leverage, and never beyond what Alpaca lends overnight. An
-  account that cannot borrow invests at 1x.
+- **Leverage.** Every target is multiplied by the bot's leverage. At 1x the bot buys only
+  with the account's cash. Above 1x it borrows from Alpaca up to the bot's leverage,
+  within what Alpaca lends overnight at the time of each purchase. An account that cannot
+  borrow invests at 1x. A change of leverage on My bots resizes every position at the
+  next target. Alpaca charges interest on the money borrowed.
 - **Stop-loss and take-profit.** They are the bot's own settings on My bots, placed at
   Alpaca as soon as each purchase fills. A bot with no stop-loss setting has none. Whole
-  shares carry their stop-loss until it is cancelled; a fraction of a share carries one
-  for the current trading day only, placed again each day while the connector runs.
+  shares carry both until they are cancelled; a fraction of a share carries only its
+  stop-loss, for the current trading day, placed again each day while the connector runs.
+  If the price is already past a level when its order is placed, the position is sold at
+  market.
 - **Only its own markets and orders.** The connector trades only the stocks the target
   lists, and cancels only the orders it placed. Shares you hold in other stocks are left
-  alone; shares of the feed's stocks are part of what it brings to the target.
-- **Paused, or any state other than active.** The connector sells, at market and while
-  the market is open, the shares it holds in the feed's stocks, and buys nothing. The same
-  happens if the bot is moved to one of MarketAI's own signal feeds, which send no target
-  portfolio.
+  alone; every share of the feed's stocks counts as the bot's, whoever bought it, so use
+  an Alpaca account for this bot alone.
+- **Paused, or any state other than active.** The connector sells at market, at once or
+  at the next open, every share the account holds in the feed's stocks, and buys nothing.
+  The same happens if the bot is moved to one of MarketAI's own signal feeds, which send no
+  target portfolio. A move to another rule feed sells only the old feed's stocks that the
+  new feed does not trade.
 
 **Start with an Alpaca paper account.** Its API keys start with PK, and the setup then
 suggests "yes" when it asks whether it is a paper account. Alpaca's own rules, such as
@@ -179,11 +185,13 @@ ignored by git, so an update never overwrites or conflicts with them. Please do 
 - **The connector places a stop-loss at the exchange for every position,** as an order of
   its own (on Alpaca, when the bot has a stop-loss setting). Once placed, it does not
   depend on the connector: it stays at the exchange if the connector, your computer or
-  your internet connection stops. If placing it fails, the connector retries and reports
+  your internet connection stops (on Alpaca, a fraction of a share's stop-loss lasts only
+  to the end of that trading day). If placing it fails, the connector retries and reports
   it in its log.
 - **Keep the computer awake.** While the computer sleeps, the bots cannot act: they miss
   every signal, including closes, until it wakes. Open positions keep their stop-loss and
-  take-profit at the exchange. Turn sleep off in the power settings, or run the connector
+  take-profit at the exchange (on Alpaca, a fraction of a share's stop-loss only to the end
+  of that trading day). Turn sleep off in the power settings, or run the connector
   on a machine that is always on, such as a small server or a Raspberry Pi.
 - **Your keys stay on your computer.** The connector sends the bot token only to MarketAI,
   and uses your exchange keys only with your exchange. Logs show only the first five

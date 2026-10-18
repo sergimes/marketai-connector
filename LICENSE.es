@@ -31,8 +31,8 @@ i) «fallo» es todo error, defecto, mal funcionamiento o interrupción del cone
    una orden enviada con un tamaño erróneo y una orden que no se envió, modificó o
    canceló cuando correspondía;
 j) «señales» es lo que el servicio de MarketAI envía al conector para un bot: las
-   señales del feed de señales del bot y, para un bot que sigue una cartera objetivo
-   (cláusula 8.5), dicha cartera objetivo.
+   señales de negociación del feed de señales del bot y, para un bot que sigue una
+   cartera objetivo (cláusula 8.5), dicha cartera objetivo.
 1.2 La cláusula 2 establece lo que cualquier persona puede hacer con los archivos del
 repositorio. Las cláusulas 3 a 7 se aplican al conector. Las demás cláusulas se aplican
 al conector y, cuando usted los utilice con el conector, a los archivos del repositorio.
@@ -123,8 +123,9 @@ a su exchange y frente a cualquier tercero, y sus resultados, tanto ganancias co
 pérdidas, son suyos. Ello incluye los riesgos descritos en DISCLAIMER.es.md, como un
 stop-loss ejecutado a un precio peor que su precio de activación, un take-profit que no
 llega a ejecutarse, una señal perdida mientras su ordenador estaba apagado o en reposo,
-y los cierres descritos en la cláusula 8.3. La cláusula 10 determina en exclusiva si
-debemos indemnizarle, y en qué medida, por una pérdida causada por un fallo.
+los cierres descritos en la cláusula 8.3 y las ventas descritas en la cláusula 8.5. La
+cláusula 10 determina en exclusiva si debemos indemnizarle, y en qué medida, por una
+pérdida causada por un fallo.
 8.3 El conector cierra todas las posiciones abiertas de un bot, a mercado si una orden
 limitada no se ejecuta, cuando el bot está en pausa, pendiente de aprobación por
 MarketAI o impagado, o cuando se retira su feed de señales; cuando el servicio de
@@ -135,19 +136,28 @@ aplica, en su lugar, la cláusula 8.5.
 8.4 Usted debe revisar su cuenta de exchange con regularidad. Si advierte una orden que
 no esperaba, debe detener el conector sin demora e informarnos a través de
 app.marketai.trade.
-8.5 Un bot que sigue un feed de reglas puede seguir su cartera objetivo en una cuenta de
-Alpaca. Tras cada barra, el servicio de MarketAI envía lo que la cuenta debe mantener,
-como porcentaje de su valor en cada mercado del feed de señales del bot, y el conector
-compra y vende acciones para ajustar la cuenta a ello. Vende antes de comprar. Compra con
-dinero prestado por Alpaca solo cuando el apalancamiento del bot es superior a 1, y nunca
-por encima de lo que Alpaca presta de un día para otro. Coloca el stop-loss y el
-take-profit que prevé la configuración del bot en My bots, y ninguno cuando esta no prevé
-ninguno. Opera únicamente en los mercados que enumera la cartera objetivo, y solo cancela
-las órdenes que él mismo ha colocado. Cuando el bot se encuentra en cualquier estado
-distinto de activo, incluidos los estados enumerados en la cláusula 8.3, o cuando su feed
-de señales no envía cartera objetivo, el conector vende, a mercado y mientras el mercado
-está abierto, todas las posiciones que el bot mantiene en esos mercados, y no compra
-nada. Esa venta puede materializar una pérdida.
+8.5 Un bot que sigue uno de sus feeds de reglas (un feed de señales que sigue las reglas
+que usted establece en MarketAI) puede seguir su cartera objetivo en una cuenta de
+Alpaca. Tras cada barra del feed (cada día, en un feed diario), el servicio de MarketAI
+envía el porcentaje del valor de la cuenta que debe mantenerse en cada mercado del feed de
+señales del bot; el conector lo multiplica por el apalancamiento del bot y compra y vende
+acciones para ajustar la cuenta a ello. Trata como del bot todas las acciones que la
+cuenta mantiene en esos mercados, con independencia de quién las haya comprado; usted
+debe utilizar una cuenta de Alpaca exclusivamente para este bot. Primero vende, a
+mercado, y después compra. Dimensiona sus compras de modo que solo tome dinero prestado de
+Alpaca cuando el apalancamiento del bot es superior a 1, y en ese caso dentro de lo que
+Alpaca presta de un día para otro en el momento de la compra. Coloca los niveles de
+stop-loss y take-profit que MarketAI envía conforme a la configuración del bot, y ninguno
+cuando esta no prevé ninguno; una fracción de acción lleva solo uno de ellos, el
+stop-loss cuando lo hay, válido para una sesión cada vez. Si, al colocar o modificar su
+orden, el precio ya ha superado un nivel, vende la posición a mercado. Opera únicamente en
+los mercados que enumera la cartera objetivo, y solo cancela las órdenes que él mismo ha
+colocado. Cuando el bot se encuentra en cualquier estado distinto de activo, incluidos
+los enumerados en la cláusula 8.3, o sigue un feed de señales que no envía cartera
+objetivo, el conector vende a mercado, de inmediato o en la siguiente apertura, todas las
+acciones que la cuenta mantiene en esos mercados, y no compra nada. Cuando usted cambia el
+bot a otro feed de reglas, vende a mercado las acciones de los mercados del feed anterior
+que el nuevo feed no negocia. Esa venta puede materializar una pérdida.
 
 9. Exclusión de garantías
 9.1 El conector no tiene precio propio: se suministra con sus bots de MarketAI. Sin
@@ -165,9 +175,9 @@ de conformidad que se habría subsanado únicamente con esa actualización, salv
 no pudiera instalarla por deficiencias de nuestras instrucciones de instalación.
 
 10. Responsabilidad
-10.1 Operar con derivados apalancados, e invertir con dinero prestado, conlleva un riesgo
-elevado de pérdidas, e invertir en acciones conlleva un riesgo de pérdidas; usted lo hace
-por su cuenta y riesgo. No aseguramos ni garantizamos que seguir ningún feed de
+10.1 Operar con derivados apalancados, e invertir con dinero prestado, conllevan un
+riesgo elevado de pérdidas, e invertir en acciones conlleva un riesgo de pérdidas; usted
+lo hace por su cuenta y riesgo. No aseguramos ni garantizamos que seguir ningún feed de
 señales vaya a generar beneficios. Un feed de señales puede perder dinero incluso cuando
 todo funciona según lo previsto, y esas pérdidas son suyas.
 10.2 No respondemos de los daños y perjuicios derivados de lo siguiente, salvo en la
@@ -235,12 +245,17 @@ entrada en vigor de la modificación. Las versiones del conector publicadas a pa
 entonces también la comunicarán en sus registros y le pedirán, en el asistente de
 configuración (setup), que acepte la licencia modificada.
 13.3 Desde el día en que una modificación entre en vigor, sus bots no abrirán nuevas
-posiciones hasta que usted la haya aceptado, y podremos rechazar las versiones del
-conector publicadas antes de ella. Si usted no acepta una modificación, podrá resolver
-su contrato de suscripción con MarketAI; si es consumidor, se le reembolsará entonces lo
-que nos haya pagado por cualquier periodo que ya no pueda utilizar.
+posiciones (en Alpaca, no comprarán nada) hasta que usted la haya aceptado, y podremos
+rechazar las versiones del conector publicadas antes de ella. Si usted no acepta una
+modificación, podrá resolver su contrato de suscripción con MarketAI; si es consumidor,
+se le reembolsará entonces lo que nos haya pagado por cualquier periodo que ya no pueda
+utilizar.
 13.4 Una modificación exclusivamente a su favor, como una traducción de esta licencia,
 puede entrar en vigor de inmediato y no requiere una nueva aceptación.
+13.5 La versión 1.4 de esta licencia añade la inversión en Alpaca (cláusulas 1.1 j) y
+8.5) y no modifica nada para los bots en un exchange de criptoactivos. Si usted aceptó la
+versión 1.3, esta sigue rigiendo dichos bots hasta que acepte la presente versión. Un bot
+en Alpaca no compra nada hasta que usted haya aceptado la presente versión.
 
 14. Legislación aplicable, jurisdicción y reclamaciones
 14.1 Esta licencia se rige por la legislación española. Si usted es consumidor, conserva

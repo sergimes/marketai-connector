@@ -30,9 +30,9 @@ more favourable to you prevails; otherwise, the Spanish version prevails.
     of MarketAI's service, including an order that your bots' signals did not call for,
     an order sent with a wrong size, and an order that was not sent, changed or
     cancelled when it should have been;
-(j) "signals" means what MarketAI's service sends the connector for a bot: the signals
-    of the bot's signal feed and, for a bot that follows a target portfolio (section
-    8.5), that target portfolio.
+(j) "signals" means what MarketAI's service sends the connector for a bot: the trading
+    signals of the bot's signal feed and, for a bot that follows a target portfolio
+    (section 8.5), that target portfolio.
 1.2 Section 2 sets out what anyone may do with the repository's files. Sections 3 to 7
 apply to the connector. The other sections apply to the connector and, when you use
 them with the connector, to the repository's files.
@@ -117,10 +117,10 @@ any time.
 your API keys, whatever caused it. It is your order: it binds you towards your exchange
 and any third party, and its results, gains and losses alike, are yours. This includes
 the risks described in DISCLAIMER.md, such as a stop-loss filled at a worse price than
-its trigger price, a take-profit that is not filled, a signal missed while your
-computer was off or asleep, and the closes described in section 8.3. Whether, and to
-what extent, we must compensate you for a loss that a failure caused is governed only
-by section 10.
+its trigger price, a take-profit that is not filled, a signal missed while your computer
+was off or asleep, the closes described in section 8.3 and the sales described in
+section 8.5. Whether, and to what extent, we must compensate you for a loss that a
+failure caused is governed only by section 10.
 8.3 The connector closes every open position of a bot, at market if a limit order does
 not fill, when the bot is paused, is waiting for MarketAI's approval, is not paid, or
 its signal feed is withdrawn; when MarketAI's service reports a state for the bot that
@@ -130,18 +130,26 @@ that follows a target portfolio, section 8.5 applies instead.
 8.4 You must check your exchange account regularly. If you notice an order you did not
 expect, you must stop the connector without delay and inform us through
 app.marketai.trade.
-8.5 A bot on a rule feed may follow its target portfolio on an Alpaca account. After
-each bar, MarketAI's service sends what the account should hold, as a share of its value
-in each market of the bot's signal feed, and the connector buys and sells shares to
-bring the account to it. It sells before it buys. It buys with money borrowed from
-Alpaca only when the bot's leverage is above 1, and never beyond what Alpaca lends
-overnight. It places the stop-loss and the take-profit that the bot's settings on My
-bots call for, and none when they call for none. It trades only the markets that the
-target portfolio lists, and cancels only orders that it placed itself. When the bot is
-in any state other than active, including the states listed in section 8.3, or its
-signal feed sends no target portfolio, the connector sells, at market and while the
-market is open, every position the bot holds in those markets, and buys nothing. Such a
-sale can lock in a loss.
+8.5 A bot on one of your rule feeds (a signal feed that follows rules you set on
+MarketAI) may follow its target portfolio on an Alpaca account. After each bar of the
+feed (each day, on a daily feed), MarketAI's service sends the percentage of the
+account's value to hold in each market of the bot's signal feed; the connector
+multiplies it by the bot's leverage and buys and sells shares to bring the account to
+it. It treats every share the account holds in those markets as the bot's, whoever
+bought it; you must use an Alpaca account for this bot alone. It sells first, at market,
+and then buys. It sizes its purchases so as to borrow from Alpaca only when the bot's
+leverage is above 1, and then within what Alpaca lends overnight at the time of the
+purchase. It places the stop-loss and take-profit levels that MarketAI sends from the
+bot's settings, and none when those settings set none; a fraction of a share carries only
+one of them, the stop-loss when there is one, for one trading day at a time. If the price
+is already past a level when the connector places or moves its order, it sells the
+position at market instead. It trades only the markets that the target portfolio lists,
+and cancels only orders that it placed itself. When the bot is in any state other than
+active, including the states listed in section 8.3, or follows a signal feed that sends
+no target portfolio, the connector sells at market, at once or at the next open, every
+share the account holds in those markets, and buys nothing. When you move the bot to
+another rule feed, it sells at market the shares of the old feed's markets that the new
+feed does not trade. Such a sale can lock in a loss.
 
 9. No warranty
 9.1 The connector has no price of its own: it is supplied with your MarketAI bots.
@@ -159,11 +167,10 @@ remedied, unless you could not install it because our installation instructions 
 inadequate.
 
 10. Liability
-10.1 Trading leveraged derivatives, and investing with borrowed money, carries a high
-risk of loss, and investing in shares carries a risk of loss; you do so at your own
-risk. We do not promise or guarantee that following any signal feed will make a
-profit. A signal feed may lose money even when everything works as intended, and such
-losses are yours.
+10.1 Trading leveraged derivatives, and investing with borrowed money, carry a high risk
+of loss, and investing in shares carries a risk of loss; you do so at your own risk. We
+do not promise or guarantee that following any signal feed will make a profit. A signal
+feed may lose money even when everything works as intended, and such losses are yours.
 10.2 We are not liable for any loss or damage arising from the following, except to
 the extent that a failure caused it (sections 10.3 and 10.4 govern that):
 (a) movements in market prices;
@@ -222,13 +229,17 @@ it; a security need; or to make its wording clearer.
 13.2 We will notify you by email at least 30 days before an amendment takes effect.
 Versions of the connector released from then on also report it in their logs and ask
 you, in the setup, to accept the amended licence.
-13.3 From the day an amendment takes effect, your bots open no new positions until you
-have accepted it, and we may refuse versions of the connector released before it. If
-you do not accept an amendment, you may terminate your MarketAI subscription; if you
-are a consumer, you will then be refunded what you paid us for any period you can no
-longer use.
+13.3 From the day an amendment takes effect, your bots open no new positions (on Alpaca,
+buy nothing) until you have accepted it, and we may refuse versions of the connector
+released before it. If you do not accept an amendment, you may terminate your MarketAI
+subscription; if you are a consumer, you will then be refunded what you paid us for any
+period you can no longer use.
 13.4 An amendment that is solely in your favour, such as a translation of this licence,
 may take effect immediately and does not need to be accepted again.
+13.5 Version 1.4 of this licence adds investing on Alpaca (sections 1.1(j) and 8.5) and
+changes nothing for bots on a crypto exchange. If you accepted version 1.3, it continues
+to govern those bots until you accept this version. A bot on Alpaca buys nothing until
+you have accepted this version.
 
 14. Governing law, jurisdiction and complaints
 14.1 This licence is governed by Spanish law. If you are a consumer, you also keep the
