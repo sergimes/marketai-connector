@@ -8,17 +8,26 @@ connector receives that feed's signals and places the orders on your exchange ac
 with your own API keys, on your own computer. Your API keys and your funds never pass
 through MarketAI.
 
-> **Trading leveraged futures can lose you money, including your entire account balance.**
-> Please read the [risk disclaimer](DISCLAIMER.md) before you start, and try the connector
-> on a demo account first.
+A bot runs on one of two kinds of account:
+
+- **crypto futures on Bitget or Hyperliquid**, following a signal feed's signals;
+- **US stocks on Alpaca**, for a bot on one of your own rule feeds: the connector keeps
+  the account in line with the bot's target portfolio (see
+  [Investing in US stocks with Alpaca](#investing-in-us-stocks-with-alpaca)).
+
+> **Trading leveraged futures, or investing with borrowed money, can lose you money,
+> including your entire account balance.** Please read the
+> [risk disclaimer](DISCLAIMER.md) before you start, and try the connector on a demo or
+> paper account first.
 > En español: [LICENSE.es](LICENSE.es) y [DISCLAIMER.es.md](DISCLAIMER.es.md).
 
 ## Requirements
 
 - **A bot on MarketAI**, created on the My bots page. Each bot has a short id (such as
   `k7m3q9x2`) and a token.
-- **One exchange account on Bitget or Hyperliquid for each bot**, with an API key that
-  can **trade but not withdraw**.
+- **One exchange account for each bot**: on Bitget or Hyperliquid, with an API key that
+  can **trade but not withdraw**; or on Alpaca, with the account's API keys (a paper
+  account and a live account each have their own).
 - **A computer that stays on and awake, with Docker**: Docker Desktop on Windows or Mac,
   or Docker Engine on Linux. Both x86 and ARM are supported, for example a Raspberry Pi 4
   or 5 with a 64-bit system, or an Apple silicon Mac.
@@ -53,9 +62,10 @@ verifies both before saving: MarketAI confirms which bot the token belongs to, a
 exchange reports the account's balance (this check only reads; it never trades). The
 setup then offers to start the bot.
 
-Within a minute, the bot's log reports `Trading signal feed ...`, and the My bots page
-shows the bot as **Connected**. You can see that line with **Show a bot's recent log**
-in the setup.
+Within a minute, the bot's log reports `Trading signal feed ...` (on Alpaca:
+`The bot is active: it follows its target portfolio ...`), and the My bots page shows the
+bot as **Connected**. You can see that line with **Show a bot's recent log** in the
+setup.
 
 ## The setup
 
@@ -102,6 +112,46 @@ restart it.
 | **Another signal feed** | closes every open position of the previous feed, then trades the new one |
 | **Another leverage** | uses it for new entries; open positions keep their size |
 
+A bot on Alpaca follows the same settings in its own way: see the next section.
+
+## Investing in US stocks with Alpaca
+
+A bot on one of your own **rule feeds** can invest in US stocks on an
+[Alpaca](https://alpaca.markets) account. In the setup, choose **Add a bot**, then
+**Alpaca (US stocks, for a bot on a rule feed)**, and paste the account's API key ID and
+secret key from Alpaca's dashboard. The setup checks them with one read of the account,
+and tells you its value and whether it can borrow.
+
+After each bar, MarketAI sends the bot's **target portfolio**: the share of the account's
+value to hold in each stock of the feed. The connector brings the account to it:
+
+- **When the market is open.** A target that arrives after the close is applied at the
+  next open. Orders fill only during regular US market hours.
+- **Sales first, then purchases.** What the feed buys at the open is bought at the open,
+  at any price. Anything else the account is short of (a bar the connector missed, an
+  order Alpaca refused, a deposit) is bought only at or below the price limit MarketAI
+  sends, so the account can hold less than its target. The log names each purchase
+  skipped and why.
+- **Leverage.** At 1x the bot buys only with the account's cash. Above 1x it borrows from
+  Alpaca up to the bot's leverage, and never beyond what Alpaca lends overnight. An
+  account that cannot borrow invests at 1x.
+- **Stop-loss and take-profit.** They are the bot's own settings on My bots, placed at
+  Alpaca as soon as each purchase fills. A bot with no stop-loss setting has none. Whole
+  shares carry their stop-loss until it is cancelled; a fraction of a share carries one
+  for the current trading day only, placed again each day while the connector runs.
+- **Only its own markets and orders.** The connector trades only the stocks the target
+  lists, and cancels only the orders it placed. Shares you hold in other stocks are left
+  alone; shares of the feed's stocks are part of what it brings to the target.
+- **Paused, or any state other than active.** The connector sells, at market and while
+  the market is open, the shares it holds in the feed's stocks, and buys nothing. The same
+  happens if the bot is moved to one of MarketAI's own signal feeds, which send no target
+  portfolio.
+
+**Start with an Alpaca paper account.** Its API keys start with PK, and the setup then
+suggests "yes" when it asks whether it is a paper account. Alpaca's own rules, such as
+those on day trading and on margin, still apply to the account, and can refuse an order
+or restrict the account.
+
 ## Updates
 
 **The connector updates itself.** At minute 7, 22, 37 and 52 of every hour, the
@@ -127,9 +177,10 @@ ignored by git, so an update never overwrites or conflicts with them. Please do 
 - **One exchange account per bot.** Each entry is sized from the whole account's balance,
   so two bots on one account would each trade as if they had all of it.
 - **The connector places a stop-loss at the exchange for every position,** as an order of
-  its own. Once placed, it does not depend on the connector: it stays at the exchange if
-  the connector, your computer or your internet connection stops. If placing it fails,
-  the connector retries every two minutes and reports it in its log.
+  its own (on Alpaca, when the bot has a stop-loss setting). Once placed, it does not
+  depend on the connector: it stays at the exchange if the connector, your computer or
+  your internet connection stops. If placing it fails, the connector retries and reports
+  it in its log.
 - **Keep the computer awake.** While the computer sleeps, the bots cannot act: they miss
   every signal, including closes, until it wakes. Open positions keep their stop-loss and
   take-profit at the exchange. Turn sleep off in the power settings, or run the connector
@@ -143,7 +194,7 @@ ignored by git, so an update never overwrites or conflicts with them. Please do 
 - **Run each bot in one place only.** If the same bot runs twice, MarketAI keeps the newer
   instance and stops the older one.
 - **Start with a demo account.** Use Bitget demo API keys, and answer "yes" when the setup
-  asks whether it is a demo account.
+  asks whether it is a demo account; on Alpaca, use a paper account.
 
 ## Troubleshooting
 
@@ -163,6 +214,11 @@ see:
 | `STOPPED: MarketAI revoked this bot's token` | The token was replaced or the bot was deleted. Give the bot its new token in the setup, then run `docker compose up -d`. |
 | `open skipped: ... below the venue minimum` | The account is too small for the exchange's smallest order at this leverage. That market is skipped; an order is never rounded up to the minimum. |
 | `open skipped: unusable equity` | The connector finds no funds to trade with. Fund the futures account (on Bitget, not the spot wallet). |
+| `... one of MarketAI's own signal feeds ... an Alpaca account cannot follow them` | An Alpaca bot needs a rule feed. Choose one of your rule feeds for the bot on the My bots page. |
+| `The market is closed. The target portfolio is applied when it opens, at ...` | Nothing to do: the bot waits for the US market to open. |
+| `... a catch-up purchase of ... was not placed, because the market is above its price limit` | Nothing to do: the stock is above the price MarketAI allows for a late purchase. The bot tries again with the next target. |
+| `The bot's leverage is ...x, but this Alpaca account cannot borrow` | The account is a cash account, so the bot invests at 1x. Enable margin at Alpaca, or set the bot's leverage to 1 on My bots. |
+| `The Alpaca paper account could not be read` (or live account) | Alpaca did not accept the keys, or did not answer. Check the keys in the setup with **Change a bot**; a paper account's keys work only for paper trading. |
 
 The complete log of each bot is kept inside Docker. To copy it out, run
 `docker compose cp bot-k7m3q9x2:/app/logs ./logs` (with your bot's id).

@@ -1,4 +1,4 @@
-MarketAI Connector licence, version 1.3 (25 September 2026)
+MarketAI Connector licence, version 1.4 (18 October 2026)
 
 Copyright (c) 2026 MarketAI (https://app.marketai.trade). All rights reserved.
 
@@ -24,12 +24,15 @@ more favourable to you prevails; otherwise, the Spanish version prevails.
 (g) "order" means any instruction the connector sends to an exchange to open, change or
     close a position, or to place, change or cancel an instruction resting at the
     exchange, such as a stop-loss or a take-profit;
-(h) "exchange" means the trading platform, such as Bitget or Hyperliquid, that holds an
-    account the connector trades;
+(h) "exchange" means the trading platform or broker, such as Bitget, Hyperliquid or
+    Alpaca, that holds an account the connector trades;
 (i) "failure" means any error, defect, malfunction or interruption of the connector or
     of MarketAI's service, including an order that your bots' signals did not call for,
     an order sent with a wrong size, and an order that was not sent, changed or
-    cancelled when it should have been.
+    cancelled when it should have been;
+(j) "signals" means what MarketAI's service sends the connector for a bot: the signals
+    of the bot's signal feed and, for a bot that follows a target portfolio (section
+    8.5), that target portfolio.
 1.2 Section 2 sets out what anyone may do with the repository's files. Sections 3 to 7
 apply to the connector. The other sections apply to the connector and, when you use
 them with the connector, to the repository's files.
@@ -122,10 +125,23 @@ by section 10.
 not fill, when the bot is paused, is waiting for MarketAI's approval, is not paid, or
 its signal feed is withdrawn; when MarketAI's service reports a state for the bot that
 the connector does not recognise; and, for the positions of the old signal feed, when
-you switch the bot to another signal feed. Such a close can lock in a loss.
+you switch the bot to another signal feed. Such a close can lock in a loss. For a bot
+that follows a target portfolio, section 8.5 applies instead.
 8.4 You must check your exchange account regularly. If you notice an order you did not
 expect, you must stop the connector without delay and inform us through
 app.marketai.trade.
+8.5 A bot on a rule feed may follow its target portfolio on an Alpaca account. After
+each bar, MarketAI's service sends what the account should hold, as a share of its value
+in each market of the bot's signal feed, and the connector buys and sells shares to
+bring the account to it. It sells before it buys. It buys with money borrowed from
+Alpaca only when the bot's leverage is above 1, and never beyond what Alpaca lends
+overnight. It places the stop-loss and the take-profit that the bot's settings on My
+bots call for, and none when they call for none. It trades only the markets that the
+target portfolio lists, and cancels only orders that it placed itself. When the bot is
+in any state other than active, including the states listed in section 8.3, or its
+signal feed sends no target portfolio, the connector sells, at market and while the
+market is open, every position the bot holds in those markets, and buys nothing. Such a
+sale can lock in a loss.
 
 9. No warranty
 9.1 The connector has no price of its own: it is supplied with your MarketAI bots.
@@ -143,8 +159,9 @@ remedied, unless you could not install it because our installation instructions 
 inadequate.
 
 10. Liability
-10.1 Trading leveraged derivatives carries a high risk of loss, and you do so at your
-own risk. We do not promise or guarantee that following any signal feed will make a
+10.1 Trading leveraged derivatives, and investing with borrowed money, carries a high
+risk of loss, and investing in shares carries a risk of loss; you do so at your own
+risk. We do not promise or guarantee that following any signal feed will make a
 profit. A signal feed may lose money even when everything works as intended, and such
 losses are yours.
 10.2 We are not liable for any loss or damage arising from the following, except to

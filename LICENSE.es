@@ -1,4 +1,4 @@
-Licencia del MarketAI Connector, versión 1.3 (25 de septiembre de 2026)
+Licencia del MarketAI Connector, versión 1.4 (18 de octubre de 2026)
 
 Copyright (c) 2026 MarketAI (https://app.marketai.trade). Todos los derechos reservados.
 
@@ -24,12 +24,15 @@ f) «el servicio de MarketAI» es el servicio ofrecido en app.marketai.trade, in
 g) «orden» es toda instrucción que el conector envía a un exchange para abrir,
    modificar o cerrar una posición, o para colocar, modificar o cancelar una instrucción
    que queda en el exchange, como un stop-loss o un take-profit;
-h) «exchange» es la plataforma de negociación, como Bitget o Hyperliquid, en la que está
-   la cuenta con la que opera el conector;
+h) «exchange» es la plataforma de negociación o el intermediario (bróker), como Bitget,
+   Hyperliquid o Alpaca, en el que está la cuenta con la que opera el conector;
 i) «fallo» es todo error, defecto, mal funcionamiento o interrupción del conector o del
    servicio de MarketAI, incluidas una orden que las señales de sus bots no requerían,
    una orden enviada con un tamaño erróneo y una orden que no se envió, modificó o
-   canceló cuando correspondía.
+   canceló cuando correspondía;
+j) «señales» es lo que el servicio de MarketAI envía al conector para un bot: las
+   señales del feed de señales del bot y, para un bot que sigue una cartera objetivo
+   (cláusula 8.5), dicha cartera objetivo.
 1.2 La cláusula 2 establece lo que cualquier persona puede hacer con los archivos del
 repositorio. Las cláusulas 3 a 7 se aplican al conector. Las demás cláusulas se aplican
 al conector y, cuando usted los utilice con el conector, a los archivos del repositorio.
@@ -127,10 +130,24 @@ limitada no se ejecuta, cuando el bot está en pausa, pendiente de aprobación p
 MarketAI o impagado, o cuando se retira su feed de señales; cuando el servicio de
 MarketAI comunica para el bot un estado que el conector no reconoce; y, respecto de las
 posiciones del feed anterior, cuando usted cambia el bot a otro feed de señales. Ese
-cierre puede materializar una pérdida.
+cierre puede materializar una pérdida. A un bot que sigue una cartera objetivo se le
+aplica, en su lugar, la cláusula 8.5.
 8.4 Usted debe revisar su cuenta de exchange con regularidad. Si advierte una orden que
 no esperaba, debe detener el conector sin demora e informarnos a través de
 app.marketai.trade.
+8.5 Un bot que sigue un feed de reglas puede seguir su cartera objetivo en una cuenta de
+Alpaca. Tras cada barra, el servicio de MarketAI envía lo que la cuenta debe mantener,
+como porcentaje de su valor en cada mercado del feed de señales del bot, y el conector
+compra y vende acciones para ajustar la cuenta a ello. Vende antes de comprar. Compra con
+dinero prestado por Alpaca solo cuando el apalancamiento del bot es superior a 1, y nunca
+por encima de lo que Alpaca presta de un día para otro. Coloca el stop-loss y el
+take-profit que prevé la configuración del bot en My bots, y ninguno cuando esta no prevé
+ninguno. Opera únicamente en los mercados que enumera la cartera objetivo, y solo cancela
+las órdenes que él mismo ha colocado. Cuando el bot se encuentra en cualquier estado
+distinto de activo, incluidos los estados enumerados en la cláusula 8.3, o cuando su feed
+de señales no envía cartera objetivo, el conector vende, a mercado y mientras el mercado
+está abierto, todas las posiciones que el bot mantiene en esos mercados, y no compra
+nada. Esa venta puede materializar una pérdida.
 
 9. Exclusión de garantías
 9.1 El conector no tiene precio propio: se suministra con sus bots de MarketAI. Sin
@@ -148,8 +165,9 @@ de conformidad que se habría subsanado únicamente con esa actualización, salv
 no pudiera instalarla por deficiencias de nuestras instrucciones de instalación.
 
 10. Responsabilidad
-10.1 Operar con derivados apalancados conlleva un riesgo elevado de pérdidas, y usted lo
-hace por su cuenta y riesgo. No aseguramos ni garantizamos que seguir ningún feed de
+10.1 Operar con derivados apalancados, e invertir con dinero prestado, conlleva un riesgo
+elevado de pérdidas, e invertir en acciones conlleva un riesgo de pérdidas; usted lo hace
+por su cuenta y riesgo. No aseguramos ni garantizamos que seguir ningún feed de
 señales vaya a generar beneficios. Un feed de señales puede perder dinero incluso cuando
 todo funciona según lo previsto, y esas pérdidas son suyas.
 10.2 No respondemos de los daños y perjuicios derivados de lo siguiente, salvo en la

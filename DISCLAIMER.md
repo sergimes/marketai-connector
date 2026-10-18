@@ -3,11 +3,14 @@
 Read this before you run the MarketAI Connector with real money. En español:
 [DISCLAIMER.es.md](DISCLAIMER.es.md).
 
-**You can lose money, including more than you expect.** The connector trades perpetual
-futures with leverage. When the price moves against a leveraged position, you lose a
-multiple of that move: at 3x leverage, a 10% move against you loses you about 30% of the
-money in that position. With cross margin, a large enough loss can take your whole
-account balance.
+**You can lose money, including more than you expect.** On a crypto exchange, the
+connector trades perpetual futures with leverage. When the price moves against a
+leveraged position, you lose a multiple of that move: at 3x leverage, a 10% move against
+you loses you about 30% of the money in that position. With cross margin, a large enough
+loss can take your whole account balance. On Alpaca, the connector buys US shares, with
+money borrowed from Alpaca when the bot's leverage is above 1x. A loss on borrowed money
+is yours too: at 2x, a 10% fall in your shares loses you about 20% of your account's
+value, and Alpaca can ask you for more funds (a margin call) or sell your shares itself.
 
 **Signals are not personal advice.** MarketAI's signal feeds come from statistical models.
 Everyone who follows a feed gets the same signals, whatever their situation. We do not
@@ -23,14 +26,29 @@ we must compensate you: if you use the connector for a business, we do not, exce
 wilful misconduct or gross negligence; if you are a consumer, we do so as the law
 provides, and no further. Check your exchange account regularly, and stop the connector
 at once if you see an order you did not expect. To stop it trading, pause your bots on My
-bots, which closes their positions, or stop the connector, which leaves them open with
-their stop-loss and take-profit.
+bots, which closes their positions (on Alpaca, sells them while the market is open), or
+stop the connector, which leaves them open with their stop-loss and take-profit.
 
 **Orders do not always fill as planned.** A stop-loss fires as a market order and can fill
 worse than its trigger price in a fast market. A take-profit rests on the order book as a
 limit order and can be missed when the price only touches it. Exchanges, networks,
 MarketAI and your own computer can fail or be slow, and a signal sent while the connector
-is offline is not sent again.
+is offline is not sent again. On Alpaca, orders fill only while the US market is open. A
+stop-loss fires only then, so a share that opens below its stop-loss is sold at about
+the opening price, below the stop-loss's price.
+
+**An investing bot on Alpaca follows a target portfolio.** After each bar, MarketAI sends
+the share of the account's value to hold in each market of the bot's feed, and the
+connector buys and sells to match it (LICENSE section 8.5). What the feed buys at the
+open, the connector buys at the open, at any price. Anything else the account is short
+of (a bar the connector missed, an order Alpaca refused, a deposit) it buys only at or
+below the price limit MarketAI sends, so the account can hold less than the target, and
+its results can differ from the feed's. The stop-loss and take-profit are the bot's own
+settings on My bots: a bot with no stop-loss has none. Whole shares carry their
+stop-loss until it is cancelled; a fraction of a share carries one for the current
+trading day only, placed again each day while the connector runs. Alpaca's own rules,
+such as those on day trading and on margin, can refuse an order or restrict your
+account.
 
 **Some changes on MarketAI close your positions.** When your bot is paused, is waiting for
 MarketAI's approval, is not paid, or its signal feed is withdrawn, and when MarketAI
@@ -41,7 +59,9 @@ For example: you hold BTC long at 3x, and your payment fails when BTC is 5% belo
 entry. The connector closes at market, and you lose about 15% of the money in that
 position, plus fees. When the bot is deleted or its token is replaced, the connector stops
 trading and leaves open positions as they are, each with the stop-loss already placed for
-it at the exchange.
+it at the exchange. A bot on Alpaca does not close in these cases: it sells, at market
+and while the market is open, the shares it holds in its feed's markets, and buys
+nothing.
 
 **The connector updates itself.** A new release is installed automatically, usually within
 a quarter of an hour, unless you turn automatic updates off. A new release can change how
@@ -50,13 +70,14 @@ https://github.com/sergimes/marketai-connector/releases.
 
 **The software can have bugs.** It comes as it is: see [LICENSE](LICENSE) sections 9 and
 10, which also say which rights you keep as a consumer. Use an API key that **cannot
-withdraw**, start with a **demo account** and then with an amount you can afford to lose,
-and check your exchange account yourself.
+withdraw** where the exchange offers one, start with a **demo account** (on Alpaca, a
+paper account) and then with an amount you can afford to lose, and check your exchange
+account yourself.
 
 **You are responsible for your account.** You run the connector on your computer, with your
 exchange account and your API keys. You are responsible for keeping those keys safe, and for
-following the laws where you live; some countries restrict leveraged derivatives trading
-for retail customers.
+following the laws where you live; some countries restrict leveraged derivatives trading,
+or investing with borrowed money, for retail customers.
 
 **Characteristics you accept separately.** The connector is made to work this way, which
 may differ from what you would expect of trading software. The setup asks you to accept
@@ -65,5 +86,12 @@ each of these characteristics with a second, separate yes:
   it was not running or not connected;
 - a take-profit rests on the order book as a limit order and can be missed;
 - a stop-loss fires at market and can fill worse than its trigger price;
-- it closes positions at market in the cases listed in LICENSE section 8.3;
+- it closes positions at market in the cases listed in LICENSE section 8.3, and on
+  Alpaca sells them at market in the cases listed in section 8.5;
+- on Alpaca, it buys what the feed buys at the open at any price, and anything else the
+  account is short of only at or below the price limit MarketAI sends, so the account
+  can hold less than its target portfolio;
+- on Alpaca, a stop-loss fires only while the market is open, and the stop-loss of a
+  fraction of a share lasts one trading day and is placed again each day while the
+  connector runs;
 - it updates itself, and an update can change how it trades.
