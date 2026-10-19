@@ -16,14 +16,15 @@ y Alpaca puede exigirle más fondos (una llamada de margen o margin call) o vend
 acciones por sí misma. Alpaca cobra intereses por el dinero que usted toma prestado y,
 ante una caída brusca, la pérdida puede superar el valor de su cuenta.
 
-**Las señales no son asesoramiento personalizado.** Los feeds de señales propios de
-MarketAI proceden de modelos estadísticos, y todos los que siguen uno reciben las mismas
-señales, sea cual sea su situación. Un feed de reglas sigue las reglas que usted mismo
-establece; en Alpaca, la cartera objetivo es la cartera simulada de su propio bot,
-calculada a partir de esas reglas y de la configuración de su bot. No comprobamos si esta
-operativa es adecuada para usted, para su patrimonio o para su experiencia. Las
-simulaciones sobre datos históricos (backtests) y los resultados reales pasados no
-predicen los resultados futuros. Un feed puede perder dinero durante largos periodos.
+**Las señales no son asesoramiento personalizado.** Los feeds propios de MarketAI
+proceden de modelos estadísticos, y todos los que siguen uno reciben las mismas señales,
+sea cual sea su situación. Un feed creado con sus propias reglas sigue las reglas que
+usted mismo establece; en Alpaca, la cartera objetivo es la cartera simulada de su
+propio bot, calculada a partir de esas reglas y de la configuración de su bot. No
+comprobamos si esta operativa es adecuada para usted, para su patrimonio o para su
+experiencia. Las simulaciones sobre datos históricos (backtests) y los resultados reales
+pasados no predicen los resultados futuros. Un feed puede perder dinero durante largos
+periodos.
 
 **Cada orden es suya.** Las señales proceden de MarketAI; la decisión de seguirlas
 automáticamente es suya. Una vez que inicia el conector, este coloca, modifica y cancela
@@ -78,22 +79,21 @@ se coloca su orden, el conector vende a mercado. Las propias normas de Alpaca, c
 relativas a la operativa intradía y al margen, pueden rechazar una orden o restringir su
 cuenta.
 
-**Algunos cambios en MarketAI cierran sus posiciones.** Cuando su bot está en pausa,
-pendiente de aprobación por MarketAI o impagado, cuando se retira su feed de señales, y
-cuando MarketAI comunica un estado que el conector no reconoce, el conector cierra todas
-las posiciones abiertas (a mercado cuando una orden limitada no se ejecuta) y después
-espera. Cuando usted cambia un bot a otro feed de señales, el conector cierra primero las
-posiciones del feed anterior. Un cierre puede materializar una pérdida. Por ejemplo:
-tiene una posición larga en BTC con apalancamiento 3x y su pago falla cuando BTC está un
-5 % por debajo de su precio de entrada. El conector cierra a mercado y usted pierde
-alrededor del 15 % del dinero de esa posición, más las comisiones. En Alpaca, estos casos
-no cierran posiciones: el conector vende a mercado, de inmediato o en la siguiente
-apertura, todas las acciones que la cuenta mantiene en los mercados del bot, y no compra
-nada; un cambio a otro feed de reglas solo vende los mercados del feed anterior que el
-nuevo no negocia. Cuando el bot se elimina o se sustituye su token, el conector deja de
-operar y mantiene las posiciones abiertas tal como están, cada una con el stop-loss ya
-colocado en el exchange, si lo tiene (en Alpaca, el conector lo mantiene mientras está en
-funcionamiento).
+**Algunos cambios en MarketAI cierran sus posiciones.** Cuando su bot está en pausa o
+pendiente de aprobación por MarketAI, cuando se retira su feed, y cuando MarketAI
+comunica un estado que el conector no reconoce, el conector cierra todas las posiciones
+abiertas (a mercado cuando una orden limitada no se ejecuta) y después espera. Un cierre
+puede materializar una pérdida. Por ejemplo: tiene una posición larga en BTC con
+apalancamiento 3x y pausa el bot cuando BTC está un 5 % por debajo de su precio de
+entrada. El conector cierra a mercado y usted pierde alrededor del 15 % del dinero de
+esa posición, más las comisiones. En Alpaca, estos casos no cierran posiciones: el
+conector vende a mercado, de inmediato o en la siguiente apertura, todas las acciones
+que la cuenta mantiene en los mercados del bot, y no compra nada. Un bot sigue un mismo
+feed durante toda su vida: para seguir otro, páuselo, espere a que sus posiciones se
+hayan cerrado y, después, elimínelo y cree un bot nuevo. Cuando el bot se elimina o se
+sustituye su token, el conector deja de operar y mantiene las posiciones abiertas tal
+como están, cada una con el stop-loss ya colocado en el exchange, si lo tiene (en
+Alpaca, el conector lo mantiene mientras está en funcionamiento).
 
 **El conector se actualiza solo.** Una nueva versión se instala automáticamente,
 normalmente en menos de un cuarto de hora, salvo que usted desactive las actualizaciones

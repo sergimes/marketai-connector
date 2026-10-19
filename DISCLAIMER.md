@@ -14,12 +14,13 @@ value, and Alpaca can ask you for more funds (a margin call) or sell your shares
 Alpaca charges interest on the money you borrow, and in a sharp fall the loss can exceed
 your account's value.
 
-**Signals are not personal advice.** MarketAI's own signal feeds come from statistical
-models, and everyone who follows one gets the same signals, whatever their situation. A
-rule feed follows rules that you set yourself; on Alpaca, the target portfolio is your
-bot's own simulated portfolio, worked out from those rules and your bot's settings. We do
-not check whether this trading suits you, your money or your experience. Backtests and
-past live results do not predict future results. A feed can lose money for long periods.
+**Signals are not personal advice.** MarketAI's own feeds come from statistical models,
+and everyone who follows one gets the same signals, whatever their situation. A feed
+built on your own rules follows rules that you set yourself; on Alpaca, the target
+portfolio is your bot's own simulated portfolio, worked out from those rules and your
+bot's settings. We do not check whether this trading suits you, your money or your
+experience. Backtests and past live results do not predict future results. A feed can
+lose money for long periods.
 
 **Every order is yours.** The signals come from MarketAI; the choice to follow them
 automatically is yours. Once you start the connector, it places, changes and cancels
@@ -67,20 +68,19 @@ already past a level when its order is placed, the connector sells at market. Al
 own rules, such as those on day trading and on margin, can refuse an order or restrict
 your account.
 
-**Some changes on MarketAI close your positions.** When your bot is paused, is waiting for
-MarketAI's approval, is not paid, or its signal feed is withdrawn, and when MarketAI
-reports a state the connector does not recognise, the connector closes every open
-position (at market when a limit order does not fill), then waits. When you move a bot to
-another signal feed, it first closes the old feed's positions. A close can lock in a loss.
-For example: you hold BTC long at 3x, and your payment fails when BTC is 5% below your
-entry. The connector closes at market, and you lose about 15% of the money in that
-position, plus fees. On Alpaca, these cases do not close positions: the connector sells at
-market, at once or at the next open, every share the account holds in the bot's markets,
-and buys nothing; a move to another rule feed sells only the old feed's markets that the
-new feed does not trade. When the bot is deleted or its token is replaced, the connector
-stops trading and leaves open positions as they are, each with the stop-loss already
-placed for it at the exchange, if it has one (on Alpaca, the connector keeps it while it
-runs).
+**Some changes on MarketAI close your positions.** When your bot is paused, is waiting
+for MarketAI's approval, or its feed is withdrawn, and when MarketAI reports a state the
+connector does not recognise, the connector closes every open position (at market when a
+limit order does not fill), then waits. A close can lock in a loss. For example: you
+hold BTC long at 3x and pause the bot when BTC is 5% below your entry. The connector
+closes at market, and you lose about 15% of the money in that position, plus fees. On
+Alpaca, these cases do not close positions: the connector sells at market, at once or at
+the next open, every share the account holds in the bot's markets, and buys nothing. A
+bot follows one feed for its whole life: to follow another, pause it, wait until its
+positions are closed, then delete it and create a new bot. When the bot is deleted or
+its token is replaced, the connector stops trading and leaves open positions as they
+are, each with the stop-loss already placed for it at the exchange, if it has one (on
+Alpaca, the connector keeps it while it runs).
 
 **The connector updates itself.** A new release is installed automatically, usually within
 a quarter of an hour, unless you turn automatic updates off. A new release can change how
